@@ -1,0 +1,14 @@
+apiVersion: v1
+Kind: Pod
+metadata:
+ name: probe
+spec:
+ containers:
+ - image: nginx
+   name: nginx
+   livenessProbe:
+     httpGet:
+      path: /
+      port: 8080
+     initialDelaySeconds: 3
+     periodSeconds: 5
