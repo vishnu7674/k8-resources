@@ -1,0 +1,45 @@
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: nginx-deployment
+#   labels: # these are labels related to replica set resource
+#     app: nginx
+# spec:
+#   # modify replicas according to your case
+#   replicas: 3
+#   selector:
+#     matchLabels: #this is the syntax replica set uses to find which pod should be scaled and maintained
+#       app: nginx
+#   template: # pod template, labels are related to pod
+#     metadata:
+#       labels:
+#         app: nginx
+#     spec:
+#       containers:
+#       - name: nginx
+#         image: nginx:alpine
+#         ports:
+#         - containerPort: 80
+# ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  annotations:
+    deployment.kubernetes.io/change-cause: "Upgraded to version 2.0"
+  labels:
+    app: nginx
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 2 # we asked for 10, we are okay if 9 are running at the time of upgrade
+      maxSurge: 2 # we asked for 10, we are okay at the time of upgrade 11 are running
+  template:
+    metadata:
+      labels:
